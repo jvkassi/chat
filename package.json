@@ -1,0 +1,30 @@
+{
+  "name": "tchat",
+  "version": "1.0.0",
+  "description": "IPTEK-Forum",
+  "main": "index.js",
+  "dependencies": {
+    "duplexer": "^0.1.1",
+    "ejs": "^2.5.7",
+    "express": "^4.16.2",
+    "jshint": "^2.9.5",
+    "mustache": "^2.3.0",
+    "nodemon": "^1.14.8",
+    "socket.io": "^2.0.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kimtonlines/Tchat225.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kimtonlines/Tchat225/issues"
+  },
+  "homepage": "https://github.com/kimtonlines/Tchat225#readme"
+}

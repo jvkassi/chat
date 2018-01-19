@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <title>Tchat NodJS</title>
+  </head>
+  <body>
+    <h1>Tchat 225</h1>
+    <div class="alert alert-success" role="alert" id="newu">
+    </div><br><br>
+    <div class="vertical-menu">
+      <a href="#" class="active">Connecté(e)s</a>
+      <a href="#"><div id="moi"></div> </a>
+    </div>
+    <br><br>
+    <div id="sms">
+      <div class="message" id="smst" style="display:none">
+        <div class="info">
+        <div class="container">
+        <img src="{{{user.avatar}}}" alt="Avatar">
+        <p>{{user.username}}</p>
+        <p>{{message}}</p>
+        <span class="time-right">{{h}}:{{m}}</span>
+        </div>
+        </div>
+      </div>
+    </div>
+    <br>
+    <div id="formulaire">
+      <form action="" id="tchatForm">
+          <div class="col-lg-6">
+        <div class="form-group">
+         <div class="form-group">
+         <label for="username">Pseudo</label>
+         <input type="text" class="form-control" name="username" id="username" placeholder="Non d'Utilisateur">
+         </div>
+          <label for="email">Email</label>
+          <input type="email" class="form-control" name="mail" id="mail" aria-describedby="emailHelp" placeholder="Votre Email">
+        </div>
+        <button type="submit" class="btn btn-primary">Connecter</button>
+        </div>
+      </form>      
+    </div>
+    <br>
+    <div id="msg">
+      <form action="" id="tchatM">
+          <div class="col-lg-6">
+        <div class="form-group">
+         <div class="input-group">
+         <input type="text" class="form-control" name="message" id="message">
+         <span class="input-group-btn"><button type="submit" class="btn btn-success">Envoyer</button></span>
+         </div>
+        </div>
+        </div>
+      </form>      
+    </div>
+    
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
+        <!-- Optional JavaScript -->
+    <script src="http://localhost:5000/socket.io/socket.io.js"></script>
+    <!--<script src="http://localhost:7000/mustache/mustache.js"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.js"></script>
+    <script>
+    
+    jQuery(document).ready(function() {
+
+    var socket = io.connect('http://localhost:5000');
+    var smst = $('#smst').html();
+    $('smst').remove();
+    var lastsms = false;
+
+
+    $('#tchatForm').submit(function(event){
+      event.preventDefault();
+      socket.emit('login', {
+        username : $('#username').val(),
+        mail     : $('#mail').val()
+
+      });
+
+    });
+
+
+    socket.on('logged',function(){
+      $('#formulaire').fadeOut();
+      $('#message').focus();
+  
+    });
+
+    socket.on('new',function(user){
+      $('#moi').append('<div id="' + user.id + '"><img src="' + user.avatar + '" > <br>' + user.username +'</div><br>')
+  
+    });
+
+
+   /* socket.on('connecterU',function(user){
+      $('#newu').append('Vous êtes connecté(e) ' + user.username)
+  
+    });*/
+
+
+
+
+      /*
+    *Envois message
+    */
+
+    $('#tchatM').submit(function(event){
+      event.preventDefault();
+      socket.emit('newmsg', {message: $('#message').val()});
+      $('#message').val('');
+      $('#message').focus();
+
+    })
+
+    socket.on('newmsg', function(message){
+      if(lastsms != message.user.id){
+        $('#sms').append('<br>');
+        lastsms =message.user.id;
+      }
+  
+      $('#sms').append('<div class="message">' + Mustache.render(smst, message) + '</div>');
+      $('#sms').animate({scrollTop: $('#sms').prop('scrollHeight')}, 500);
+    })
+       
+
+
+    /*socket.on('new',function(user){
+      $('#newu').append('Un nouvel  Utilisateur connecté(e) ' + user.username)
+  
+    });*/
+
+  
+
+  
+
+    socket.on('deco', function(user){
+      $('#' + user.id).remove();
+    })
+
+  
+  });
+  
+
+    </script>
+  </body>
+</html>
