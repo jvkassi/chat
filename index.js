@@ -28,11 +28,14 @@ app.get('/', function(request, response){
    // console.log("Tok tok");
 //})//
 
-server.listen(5000);
+var server = require('http').Server(app);
 
 
 var io = require('socket.io').listen(server)
 //var mustache = require('mustache')
+
+server.listen(process.env.PORT || 5000);
+
 
 var users =  {};
 
